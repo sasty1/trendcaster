@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { neynarService } from './services/neynarService';
+import { getTrendingKeywords } from './services/neynarService';
 import { Trend } from './types';
 import { RefreshCw, MoreHorizontal, Settings } from 'lucide-react';
 
