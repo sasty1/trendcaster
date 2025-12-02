@@ -1,0 +1,5 @@
+{
+  "name": "TrendCaster",
+  "description": "A Farcaster mini-app tracking real-time keyword trends from the global feed",
+  "requestFramePermissions": []
+}
