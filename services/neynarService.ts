@@ -1,32 +1,36 @@
-export const processTrends = (casts: any[]) => {
-  const postCounts: Record<string, number> = {};
+export const processTrends = (casts: any[]): Trend[] => {
+  const wordCounts: Record<string, number> = {};
 
-  casts.forEach(cast => {
-    let text = cast.text?.toLowerCase() || "";
+  casts.forEach((cast) => {
+    // Correct text location for Neynar v2
+    const text = cast?.body?.data?.text;
+
+    if (!text || typeof text !== "string") return;
+
+    let clean = text.toLowerCase();
 
     // Remove URLs
-    text = text.replace(/https?:\/\/\S+/g, '');
+    clean = clean.replace(/https?:\/\/\S+/g, "");
 
-    // Extract all alphanumeric words (Twitter-style)
-    const words = text.match(/[a-z0-9]+/gi) || [];
+    // Extract alphanumeric words
+    const words = clean.match(/\b[a-z0-9]{3,}\b/g) || [];
 
-    // Each keyword counted once per post
-    const uniqueWordsInCast = new Set(words);
+    const uniqueWords = new Set(words);
 
-    uniqueWordsInCast.forEach(word => {
+    uniqueWords.forEach((word) => {
       if (!STOP_WORDS.has(word) && isNaN(Number(word))) {
-        postCounts[word] = (postCounts[word] || 0) + 1;
+        wordCounts[word] = (wordCounts[word] || 0) + 1;
       }
     });
   });
 
-  return Object.entries(postCounts)
+  return Object.entries(wordCounts)
     .map(([word, count]) => ({ word, count }))
     .sort((a, b) => b.count - a.count)
     .slice(0, 10)
-    .map((item, i) => ({
-      rank: i + 1,
+    .map((item, index) => ({
+      rank: index + 1,
       word: item.word,
-      count: item.count
+      count: item.count,
     }));
 };
