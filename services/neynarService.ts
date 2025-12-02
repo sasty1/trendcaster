@@ -2,22 +2,20 @@ export const processTrends = (casts: any[]): Trend[] => {
   const wordCounts: Record<string, number> = {};
 
   casts.forEach((cast) => {
-    // Correct text location for Neynar v2
-    const text = cast?.body?.data?.text;
+    const text =
+      cast?.body?.data?.text ||   // correct for Neynar v2
+      cast?.text ||               // fallback
+      "";
 
     if (!text || typeof text !== "string") return;
 
-    let clean = text.toLowerCase();
+    let clean = text.toLowerCase().replace(/https?:\/\/\S+/g, "");
 
-    // Remove URLs
-    clean = clean.replace(/https?:\/\/\S+/g, "");
-
-    // Extract alphanumeric words
     const words = clean.match(/\b[a-z0-9]{3,}\b/g) || [];
 
-    const uniqueWords = new Set(words);
+    const unique = new Set(words);
 
-    uniqueWords.forEach((word) => {
+    unique.forEach((word) => {
       if (!STOP_WORDS.has(word) && isNaN(Number(word))) {
         wordCounts[word] = (wordCounts[word] || 0) + 1;
       }
