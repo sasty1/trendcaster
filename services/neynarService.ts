@@ -65,7 +65,7 @@ function processTrends(casts: NeynarCast[]): Trend[] {
     text = text.replace(/(https?:\/\/[^\s]+)/g, '');
 
     // Extract words (alphanumeric, at least 3 chars)
-    const words = text.match(/\b[a-z0-9]{3,}\b/g) || [];
+    const words = text.match(/[a-z0-9]+/gi) || [];
 
     // Use a Set to ensure we count each keyword only once per post (Document Frequency)
     // We do NOT filter by user (one user can contribute multiple posts)
